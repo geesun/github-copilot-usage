@@ -46,6 +46,7 @@ const tui: TuiPlugin = async (api) => {
   const [label, setLabel] = createSignal("...")
 
   const load = () => {
+    setLabel("⟳")
     quota().then((x) => setLabel(x || "-")).catch(() => setLabel("-"))
   }
 
@@ -69,6 +70,26 @@ const tui: TuiPlugin = async (api) => {
       },
     },
   })
+
+  // Register command and keybind to refresh quota
+  const keybind = api.keybind.create({
+    refresh: "ctrl+shift+u",
+  })
+
+  api.command.register(() => [
+    {
+      title: "Refresh Copilot quota",
+      value: "plugin.github-copilot-usage.refresh",
+      keybind: keybind.get("refresh"),
+      category: "Plugin",
+      slash: {
+        name: "copilot-refresh",
+      },
+      onSelect: () => {
+        load()
+      },
+    },
+  ])
 }
 
 const plugin: TuiPluginModule & { id: string } = {

@@ -20,8 +20,6 @@ Copilot Usage
 
 ## Install
 
-
-
 The installer installs globally into `$HOME/.config/opencode` by default.
 
 Run:
@@ -55,3 +53,11 @@ plugin/github-copilot-usage/
 ├── install.sh          # install script
 └── README.md
 ```
+
+## Commands & Keybinds
+
+- Keybind: `Ctrl+Shift+U` — manually refresh Copilot quota (the plugin shows `⟳` while loading).
+- Command palette entry: "Refresh Copilot quota" (value: `plugin.github-copilot-usage.refresh`).
+- Slash command: `/copilot-refresh` — run from the input prompt to refresh immediately.
+
+If you want to change the keybinding, edit `github-copilot-usage.tsx` (the `api.keybind.create` call), or override keybinds in your OpenCode configuration/settings.
