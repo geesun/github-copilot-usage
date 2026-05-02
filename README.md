@@ -7,11 +7,18 @@ An [OpenCode](https://opencode.ai) TUI plugin that displays your GitHub Copilot 
 ```
 Copilot Usage
 12.34% (123/1000)
+
+Model Multipliers
+→ ×2    Claude Sonnet 4.5
+  ×1    GPT-4o
+  ×0    GPT-4.1 nano
 ```
 
 - **Bold** title: `Copilot Usage`
 - Second line: `<used_pct>% (<used>/<total>)` — percentage of quota consumed
 - Refreshes automatically after each session goes idle
+- Current model's rate multiplier shown in the prompt bar (e.g. `×2`)
+- Expandable model multiplier list in the sidebar — current model is highlighted with `→`
 
 ## Requirements
 
@@ -56,8 +63,12 @@ plugin/github-copilot-usage/
 
 ## Commands & Keybinds
 
-- Keybind: `Ctrl+Shift+U` — manually refresh Copilot quota (the plugin shows `⟳` while loading).
-- Command palette entry: "Refresh Copilot quota" (value: `plugin.github-copilot-usage.refresh`).
-- Slash command: `/copilot-refresh` — run from the input prompt to refresh immediately.
+| Keybind / Command | Action |
+|---|---|
+| `Ctrl+Shift+U` | Manually refresh Copilot quota (shows `⟳` while loading) |
+| `/copilot-refresh` | Slash command to refresh quota immediately |
+| Command palette: "Refresh Copilot quota" (`plugin.github-copilot-usage.refresh`) | Same as above |
+| `/copilot-models` | Toggle expand/collapse the model multiplier list in the sidebar |
+| Command palette: "Expand/Collapse model multipliers" (`plugin.github-copilot-usage.toggle-models`) | Same as above |
 
 If you want to change the keybinding, edit `github-copilot-usage.tsx` (the `api.keybind.create` call), or override keybinds in your OpenCode configuration/settings.
