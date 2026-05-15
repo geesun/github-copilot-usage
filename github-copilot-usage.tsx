@@ -186,37 +186,35 @@ const tui: TuiPlugin = async (api) => {
     },
   })
 
-  // Register command and keybind to refresh quota
-  const keybind = api.keybind.create({
-    refresh: "ctrl+shift+u",
+  // Register commands and keybind
+  api.keymap.registerLayer({
+    commands: [
+      {
+        namespace: "palette",
+        name: "plugin.github-copilot-usage.refresh",
+        title: "Refresh Copilot quota",
+        category: "Plugin",
+        slashName: "copilot-refresh",
+        run() {
+          loadQuota()
+          loadModels()
+        },
+      },
+      {
+        namespace: "palette",
+        name: "plugin.github-copilot-usage.toggle-models",
+        title: "Toggle model multipliers",
+        category: "Plugin",
+        slashName: "copilot-models",
+        run() {
+          setExpanded(!expanded())
+        },
+      },
+    ],
+    bindings: [
+      { key: "ctrl+shift+u", cmd: "plugin.github-copilot-usage.refresh" },
+    ],
   })
-
-  api.command.register(() => [
-    {
-      title: "Refresh Copilot quota",
-      value: "plugin.github-copilot-usage.refresh",
-      keybind: keybind.get("refresh"),
-      category: "Plugin",
-      slash: {
-        name: "copilot-refresh",
-      },
-      onSelect: () => {
-        loadQuota()
-        loadModels()
-      },
-    },
-    {
-      title: expanded() ? "Collapse model multipliers" : "Expand model multipliers",
-      value: "plugin.github-copilot-usage.toggle-models",
-      category: "Plugin",
-      slash: {
-        name: "copilot-models",
-      },
-      onSelect: () => {
-        setExpanded(!expanded())
-      },
-    },
-  ])
 }
 
 const plugin: TuiPluginModule & { id: string } = {
