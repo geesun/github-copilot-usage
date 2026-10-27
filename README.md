@@ -69,8 +69,15 @@ npm test
 
 Tests use mocked GitHub responses, not real credentials.
 
+## Code layout
+
+- `tui.tsx`: sidebar, refresh command, and refresh lifecycle.
+- `usage.ts`: credential selection, GitHub requests, quota formatting, and safe errors.
+- `index.ts`: no-op server entry; never imports TUI code.
+- `usage.test.ts`: entrypoint separation, authentication, quota, and error tests.
+
 ## Uninstall
 
-Remove the plugin entry from `cli.json`, reopen the terminal UI, and optionally
+Remove the plugin entry from `cli.json`, reload, and optionally
 remove this plugin directory. This plugin does not need an entry in `tui.json` or
 `opencode.json(c)`.

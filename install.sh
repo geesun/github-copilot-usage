@@ -15,16 +15,17 @@ CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
 DEST_DIR="$CONFIG_DIR/plugins/github-copilot-usage"
 mkdir -p "$DEST_DIR"
 DEST_REAL="$(cd "$DEST_DIR" && pwd -P)"
+FILES=(index.ts tui.tsx usage.ts package.json)
 
 if [[ "$SOURCE_DIR" != "$DEST_REAL" ]]; then
-  for file in index.ts tui.tsx github-copilot-usage.tsx usage.ts package.json; do
+  for file in "${FILES[@]}"; do
     # Do not overwrite an existing local plugin with unrelated edits.
     if [[ -e "$DEST_DIR/$file" ]] && ! cmp -s "$SOURCE_DIR/$file" "$DEST_DIR/$file"; then
       echo "Refusing to overwrite $DEST_DIR/$file; back it up or update it manually." >&2
       exit 1
     fi
   done
-  for file in index.ts tui.tsx github-copilot-usage.tsx usage.ts package.json; do
+  for file in "${FILES[@]}"; do
     cp "$SOURCE_DIR/$file" "$DEST_DIR/$file"
   done
 fi
@@ -47,4 +48,4 @@ if (!config.plugins.some((entry) => entry === ref || entry?.package === ref)) {
 console.log("Configured Copilot Usage in", file)
 NODE
 
-echo "Reopen the OpenCode terminal UI to load the plugin."
+echo "Plugin configured. Use /reload in OpenCode if needed."

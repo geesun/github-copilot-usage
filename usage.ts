@@ -2,6 +2,26 @@ const QUOTA_URL = "https://api.github.com/copilot_internal/user"
 
 export class UsageError extends Error {}
 
+type Credentials = {
+  list(options: { signal: AbortSignal }): Promise<readonly {
+    integrationID: string
+    active: boolean
+    value: { type: string; refresh?: string }
+  }[]>
+}
+
+export async function loadQuota(credentials: Credentials, signal: AbortSignal): Promise<string> {
+  const entries = await credentials.list({ signal })
+  const value = entries.find((entry) => entry.integrationID === "github-copilot" && entry.active)?.value
+  if (value?.type !== "oauth" || !value.refresh) throw new UsageError("Sign in to GitHub Copilot first")
+  return fetchQuota(value.refresh, signal)
+}
+
+export function quotaError(cause: unknown): string {
+  // SDK/fetch errors may contain credentials; only expose our own messages.
+  return cause instanceof UsageError ? cause.message : "Refresh failed; check connection and Copilot sign-in"
+}
+
 type QuotaResponse = {
   quota_snapshots?: {
     premium_interactions?: {
@@ -16,8 +36,7 @@ export function formatQuota(data: QuotaResponse): string {
   const quota = data?.quota_snapshots?.premium_interactions
   if (!quota) throw new UsageError("Premium quota unavailable for this account")
   if (quota.unlimited) return "∞"
-  const total = quota.entitlement
-  const remaining = quota.remaining
+  const { entitlement: total, remaining } = quota
   if (typeof total !== "number" || !Number.isFinite(total) || total < 0 ||
       typeof remaining !== "number" || !Number.isFinite(remaining)) {
     throw new UsageError("GitHub returned an unsupported quota format")
